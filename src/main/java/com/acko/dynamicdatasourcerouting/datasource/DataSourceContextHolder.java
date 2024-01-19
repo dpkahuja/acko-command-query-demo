@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DataSourceContextHolder {
-    private static ThreadLocal<DataSourceEnum> threadLocal;
+  private static ThreadLocal<DataSourceEnum> threadLocal;
 
-    public DataSourceContextHolder() {
-        threadLocal = new ThreadLocal<>();
-    }
+  public DataSourceContextHolder() {
+    threadLocal = new ThreadLocal<>();
+  }
 
-    public static void clearBranchContext() {
-        threadLocal.remove();
-    }
+  public static void clearBranchContext() {
+    threadLocal.remove();
+  }
 
-    public DataSourceEnum getBranchContext() {
-        return threadLocal.get();
-    }
+  public DataSourceEnum getBranchContext() {
+    return threadLocal.get();
+  }
 
-    public void setBranchContext(DataSourceEnum dataSourceEnum) {
-        threadLocal.set(dataSourceEnum);
-    }
+  public void setBranchContext(DataSourceEnum dataSourceEnum) {
+    threadLocal.set(dataSourceEnum);
+  }
 }

@@ -1,23 +1,32 @@
 package com.acko.dynamicdatasourcerouting.query.employee;
 
 import com.acko.dynamicdatasourcerouting.domain.Employee;
+import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeDTO;
+import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeSlimDTO;
+import com.acko.dynamicdatasourcerouting.mapstruct.mappers.MapStructMapper;
 import com.acko.dynamicdatasourcerouting.repository.readrepository.EmployeeReadRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AllArgsConstructor
 @Service
-public class EmployeeQueryService {
-    private final EmployeeReadRepository readRepository;
+public class EmployeeQueryService implements IEmployeeQueryService {
+  private final EmployeeReadRepository readRepository;
+  private final MapStructMapper mapStructMapper;
 
+  public List<EmployeeDTO> getEmployeeFromDB() {
+    List<EmployeeDTO> result = new ArrayList<EmployeeDTO>();
+    Iterable<Employee> itr = readRepository.findAll();
+    itr.forEach(i -> result.add(mapStructMapper.employeeToEmployeeDTO(i)));
+    return result;
+  }
 
-    public List<Employee> getFromDB() {
-        List<Employee> result = new ArrayList<Employee>();
-        Iterable<Employee> itr = readRepository.findAll();
-        itr.forEach(result::add);
-        return result;
-    }
+  public List<EmployeeSlimDTO> getEmployeeSlimFromDB() {
+    List<EmployeeSlimDTO> result = new ArrayList<EmployeeSlimDTO>();
+    Iterable<Employee> itr = readRepository.findAll();
+    itr.forEach(i -> result.add(mapStructMapper.employeeToEmployeeSlimDTO(i)));
+    return result;
+  }
 }

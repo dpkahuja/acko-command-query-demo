@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class DataSourceTwoConfig {
-    private String url;
-    private String password;
-    private String username;
+  private String url;
+  private String password;
+  private String username;
 }

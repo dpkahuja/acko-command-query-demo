@@ -1,5 +1,6 @@
 package com.acko.dynamicdatasourcerouting.datasource;
 
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,31 +14,37 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
-
 @Configuration
-@EnableJpaRepositories(basePackages = "com.attyuttam.dynamicdatasourcerouting", transactionManagerRef = "transcationManager", entityManagerFactoryRef = "entityManager")
+@EnableJpaRepositories(
+    basePackages = "com.attyuttam.dynamicdatasourcerouting",
+    transactionManagerRef = "transcationManager",
+    entityManagerFactoryRef = "entityManager")
 @EnableTransactionManagement
 @RequiredArgsConstructor
 @DependsOn("dataSourceRouting")
 public class DataSourceConfig {
 
-    private final DataSourceRouting dataSourceRouting;
+  private final DataSourceRouting dataSourceRouting;
 
-    @Bean
-    @Primary
-    public DataSource dataSource() {
-        return dataSourceRouting;
-    }
+  @Bean
+  @Primary
+  public DataSource dataSource() {
+    return dataSourceRouting;
+  }
 
-    @Bean(name = "entityManager")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(dataSource()).packages("com.attyuttam.dynamicdatasourcerouting.domain").build();
-    }
+  @Bean(name = "entityManager")
+  public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
+      EntityManagerFactoryBuilder builder) {
+    return builder
+        .dataSource(dataSource())
+        .packages("com.attyuttam.dynamicdatasourcerouting.domain")
+        .build();
+  }
 
-    @Bean(name = "transcationManager")
-    public JpaTransactionManager transactionManager(
-            @Autowired @Qualifier("entityManager") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
-        return new JpaTransactionManager(entityManagerFactoryBean.getObject());
-    }
+  @Bean(name = "transcationManager")
+  public JpaTransactionManager transactionManager(
+      @Autowired @Qualifier("entityManager")
+          LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+    return new JpaTransactionManager(entityManagerFactoryBean.getObject());
+  }
 }

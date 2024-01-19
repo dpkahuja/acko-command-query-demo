@@ -1,9 +1,8 @@
 package com.acko.dynamicdatasourcerouting.domain;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -11,15 +10,14 @@ import javax.persistence.*;
 @Table(name = "employee")
 public class Employee {
 
-    @Id                                                     // primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)     // auto increment
-    @Column(name = "employeeId")
-    private int employeeId;
+  @Id // primary key
+  @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
+  @Column(name = "employeeId")
+  private int employeeId;
 
-    @Column(name = "employeeName")
-    private String employeeName;
+  @Column(name = "employeeName")
+  private String employeeName;
 
-    @Column(name = "employeeRole")
-    private String employeeRole;
-
+  @Column(name = "employeeRole")
+  private String employeeRole;
 }
