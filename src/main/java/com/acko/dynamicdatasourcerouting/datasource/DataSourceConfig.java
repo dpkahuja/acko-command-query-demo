@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories(
-    basePackages = "com.attyuttam.dynamicdatasourcerouting",
+    basePackages = "com.acko.dynamicdatasourcerouting",
     transactionManagerRef = "transcationManager",
     entityManagerFactoryRef = "entityManager")
 @EnableTransactionManagement
@@ -37,7 +37,7 @@ public class DataSourceConfig {
       EntityManagerFactoryBuilder builder) {
     return builder
         .dataSource(dataSource())
-        .packages("com.attyuttam.dynamicdatasourcerouting.domain")
+        .packages("com.acko.dynamicdatasourcerouting.domain")
         .build();
   }
 

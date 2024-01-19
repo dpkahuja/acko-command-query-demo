@@ -4,12 +4,9 @@ import com.acko.dynamicdatasourcerouting.domain.Employee;
 import com.acko.dynamicdatasourcerouting.mapstruct.dtos.CreateEmployeeCommand;
 import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeDTO;
 import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeSlimDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MapStructMapper {
 
   @Named("getFullName")

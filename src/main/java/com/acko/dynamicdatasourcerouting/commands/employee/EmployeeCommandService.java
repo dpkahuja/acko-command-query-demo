@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class EmployeeCommandService implements IEmployeeCommandService {
-  private EmployeeWriteRepository writeRepository;
+  private final EmployeeWriteRepository writeRepository;
 
   public void handleCreateEmployeeCommand(Employee employee) {
     String name = employee.getEmployeeName();

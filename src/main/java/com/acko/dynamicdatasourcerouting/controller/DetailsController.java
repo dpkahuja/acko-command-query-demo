@@ -25,16 +25,16 @@ public class DetailsController {
   private final EmployeeQueryService employeeQueryService;
   private final MapStructMapper mapStructMapper;
 
+  @GetMapping(value = "/sync", produces = MediaType.APPLICATION_JSON_VALUE)
+  @DBContext(source = DataSourceEnum.DATASOURCE_ONE)
+  public List<EmployeeDTO> getAllEmployeeDetails() {
+    return employeeQueryService.getEmployeeFromDB();
+  }
+
   @GetMapping(value = "/sync/slim", produces = MediaType.APPLICATION_JSON_VALUE)
   @DBContext(source = DataSourceEnum.DATASOURCE_ONE)
   public List<EmployeeSlimDTO> getAllEmployeeSlimDetails() {
     return employeeQueryService.getEmployeeSlimFromDB();
-  }
-
-  @GetMapping(value = "/sync/{mode}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @DBContext(source = DataSourceEnum.DATASOURCE_ONE)
-  public List<EmployeeDTO> getAllEmployeeDetails(String mode) {
-    return employeeQueryService.getEmployeeFromDB();
   }
 
   @GetMapping(value = "/async", produces = MediaType.APPLICATION_JSON_VALUE)
