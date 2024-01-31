@@ -3,7 +3,7 @@ package com.acko.dynamicdatasourcerouting.query.employee;
 import com.acko.dynamicdatasourcerouting.domain.Employee;
 import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeDTO;
 import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeSlimDTO;
-import com.acko.dynamicdatasourcerouting.mapstruct.mappers.MapStructMapper;
+import com.acko.dynamicdatasourcerouting.mapstruct.mappers.CreateEmployeeCommandToEmployeeStructMapperImpl;
 import com.acko.dynamicdatasourcerouting.repository.readrepository.EmployeeReadRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeQueryService implements IEmployeeQueryService {
   private final EmployeeReadRepository readRepository;
-  private final MapStructMapper mapStructMapper;
+  private final CreateEmployeeCommandToEmployeeStructMapperImpl mapStructMapper;
 
   public List<EmployeeDTO> getEmployeeFromDB() {
     List<EmployeeDTO> result = new ArrayList<EmployeeDTO>();

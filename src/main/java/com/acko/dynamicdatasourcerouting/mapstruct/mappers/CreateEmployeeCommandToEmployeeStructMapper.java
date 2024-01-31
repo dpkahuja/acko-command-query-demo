@@ -7,11 +7,11 @@ import com.acko.dynamicdatasourcerouting.mapstruct.dtos.EmployeeSlimDTO;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface MapStructMapper {
+public interface CreateEmployeeCommandToEmployeeStructMapper {
 
   @Named("getFullName")
   static String getFullName(CreateEmployeeCommand employeeCommand) {
-    return employeeCommand.getFirstName() + " " + employeeCommand.getLastName();
+    return "Mr. " + employeeCommand.getName();
   }
 
   @Named("setRoleName")

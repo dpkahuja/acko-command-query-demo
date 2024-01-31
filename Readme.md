@@ -44,6 +44,11 @@ The application will start, and you can explore the endpoints for commands and q
 
 ## API Reference
 
+### Swagger
+```http
+http://localhost:8082/swagger-ui/#/
+```
+
 #### Get all employees from master
 
 ```http
