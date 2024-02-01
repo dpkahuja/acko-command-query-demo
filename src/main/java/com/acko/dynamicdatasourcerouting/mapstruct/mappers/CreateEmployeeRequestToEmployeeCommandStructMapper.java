@@ -1,6 +1,6 @@
 package com.acko.dynamicdatasourcerouting.mapstruct.mappers;
 
-import com.acko.dynamicdatasourcerouting.mapstruct.dtos.CreateEmployeeCommand;
+import com.acko.dynamicdatasourcerouting.commands.employee.models.CreateEmployeeCommand;
 import com.acko.dynamicdatasourcerouting.models.EmployeeRequest;
 import org.mapstruct.*;
 

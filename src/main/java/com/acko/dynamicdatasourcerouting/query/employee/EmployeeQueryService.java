@@ -17,14 +17,14 @@ public class EmployeeQueryService implements IEmployeeQueryService {
   private final CreateEmployeeCommandToEmployeeStructMapperImpl mapStructMapper;
 
   public List<EmployeeDTO> getEmployeeFromDB() {
-    List<EmployeeDTO> result = new ArrayList<EmployeeDTO>();
+    List<EmployeeDTO> result = new ArrayList<>();
     Iterable<Employee> itr = readRepository.findAll();
     itr.forEach(i -> result.add(mapStructMapper.employeeToEmployeeDTO(i)));
     return result;
   }
 
   public List<EmployeeSlimDTO> getEmployeeSlimFromDB() {
-    List<EmployeeSlimDTO> result = new ArrayList<EmployeeSlimDTO>();
+    List<EmployeeSlimDTO> result = new ArrayList<>();
     Iterable<Employee> itr = readRepository.findAll();
     itr.forEach(i -> result.add(mapStructMapper.employeeToEmployeeSlimDTO(i)));
     return result;

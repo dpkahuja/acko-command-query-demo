@@ -1,7 +1,7 @@
 package com.acko.dynamicdatasourcerouting.commands.employee;
 
-import com.acko.dynamicdatasourcerouting.mapstruct.dtos.CreateEmployeeCommand;
+import com.acko.dynamicdatasourcerouting.commands.employee.models.CreateEmployeeCommand;
 
 public interface IEmployeeCommandService {
-  void handleCreateEmployeeCommand(CreateEmployeeCommand command);
+  void handleCreateEmployeeCommand(final CreateEmployeeCommand command, final String by);
 }
