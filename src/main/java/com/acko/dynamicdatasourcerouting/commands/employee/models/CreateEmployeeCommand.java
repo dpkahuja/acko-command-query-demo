@@ -1,6 +1,5 @@
 package com.acko.dynamicdatasourcerouting.commands.employee.models;
 
-import com.acko.dynamicdatasourcerouting.commands.ICommands;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

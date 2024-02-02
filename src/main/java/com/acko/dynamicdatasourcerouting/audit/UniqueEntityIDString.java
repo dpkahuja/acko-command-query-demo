@@ -1,4 +1,4 @@
-package com.acko.dynamicdatasourcerouting.events;
+package com.acko.dynamicdatasourcerouting.audit;
 
 import java.util.UUID;
 

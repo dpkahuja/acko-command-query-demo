@@ -1,13 +1,13 @@
 package com.acko.dynamicdatasourcerouting.events.employee.models;
 
-import com.acko.dynamicdatasourcerouting.events.IDomainEvent;
-import com.acko.dynamicdatasourcerouting.events.UniqueEntityIDString;
+import com.acko.dynamicdatasourcerouting.audit.IAuditEventContext;
+import com.acko.dynamicdatasourcerouting.audit.UniqueEntityIDString;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class AllEmployeeDeleted implements IDomainEvent {
+public class AllEmployeeDeleted implements IAuditEventContext {
   private final String by;
   private final UniqueEntityIDString aggregateId;
 

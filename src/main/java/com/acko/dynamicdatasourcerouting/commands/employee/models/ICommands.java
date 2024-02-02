@@ -1,3 +1,3 @@
 package com.acko.dynamicdatasourcerouting.commands.employee.models;
 
-public class DeleteEmployeesCommand implements ICommands {}
+public interface ICommands {}

@@ -1,8 +1,8 @@
-package com.acko.dynamicdatasourcerouting.events;
+package com.acko.dynamicdatasourcerouting.audit;
 
 import java.util.Date;
 
-public interface IDomainEvent {
+public interface IAuditEventContext {
   default Date getCreatedTimestamp() {
     return new Date();
   }
