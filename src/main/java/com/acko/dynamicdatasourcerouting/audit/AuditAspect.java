@@ -15,7 +15,7 @@ public class AuditAspect {
 
   @Around(value = "@annotation(audit)")
   public Object handle(final ProceedingJoinPoint joinPoint, final Audit audit) throws Throwable {
-    if (audit.requiredName().equals("")) {
+    if (isMissingRequiredName(audit)) {
       log.error("audit aspect has missing field `requiredName`");
       return joinPoint.proceed();
     }
@@ -30,16 +30,25 @@ public class AuditAspect {
       // Your post-processing logic, if needed
     } catch (Exception e) {
       log.error("exception in audit asepect {}", e.getMessage());
-      if (audit.dontDispatchOnException()) {
+      if (!audit.dontDispatchOnException()) {
         exception = true;
       }
       throw e;
     } finally {
       // hook to publish all events by audEvent reference id
-      if (audit.mode().equals(AuditMode.AUTO) && !exception) {
+      if (shouldDispatchEvents(audit, exception)) {
         auditEventManager.dispatchAllEventsForAggregate();
       }
       AuditContextHolder.clear();
     }
   }
+
+  private boolean isMissingRequiredName(Audit audit) {
+    return audit.requiredName().isEmpty();
+  }
+
+  private boolean shouldDispatchEvents(Audit audit, boolean exception) {
+    return audit.mode().equals(AuditMode.AUTO) && !exception;
+  }
+
 }
