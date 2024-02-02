@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class AuditEventHandlerConfig implements IEventHandlerConfig {
   private final Map<String, List<EventHandler>> handlersMap =
-      new ConcurrentHashMap<>(); // event name to callback
+      new ConcurrentHashMap<>(); // event name to callbacks
 
-  // handlers
+  // handlers for each event
   private final EmployeeCreatedNotificationHandler employeeCreatedNotificationHandler;
   private final EmployeeCreatedLogHandler employeeCreatedLogHandler;
   private final LogCreatedHandler logCreatedHandler;

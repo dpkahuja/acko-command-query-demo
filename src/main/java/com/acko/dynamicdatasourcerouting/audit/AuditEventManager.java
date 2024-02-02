@@ -15,6 +15,7 @@ public class AuditEventManager {
   private final UniqueEntityIDString defaultGroupID;
   private final AuditEventHandlerConfig auditEventHandlerConfig;
 
+  // constructor
   public AuditEventManager(String groupName) {
     this.defaultGroupID = new UniqueEntityIDString();
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName, this.defaultGroupID);
@@ -22,6 +23,9 @@ public class AuditEventManager {
     this.auditEventHandlerConfig = BeanAccessor.getBean(AuditEventHandlerConfig.class);
   }
 
+  /*
+  * new event group for same command group
+   */
   public AuditEventGroup spawn(String groupName) {
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName);
     auditEventGroupMap.put(auditEventGroup.getUniqueEntityIDString(), auditEventGroup);
@@ -40,27 +44,37 @@ public class AuditEventManager {
     }
   }
 
-  public void dispatchEventsForAggregate(UniqueEntityIDString id) {
-    AuditEventGroup aggregate = findMarkedAggregateByID(id);
-    if (aggregate == null) {
-      log.info("cannot find aggregate with id {}", id);
-      return;
-    }
-    dispatchAggregateEvents(aggregate);
-    removeAggregateFromMarkedDispatchList(aggregate);
+  public void dispatchEventsForSingleAggregate(UniqueEntityIDString id) {
+    dispatchEventsForAggregate(id);
   }
 
   public void dispatchAllEventsForAggregate() {
-    auditEventGroupMap
-        .keySet()
-        .forEach(
-            id -> {
-              AuditEventGroup aggregate = auditEventGroupMap.get(id);
-              if (aggregate != null) {
-                dispatchAggregateEvents(aggregate);
-                removeAggregateFromMarkedDispatchList(aggregate);
-              }
-            });
+    auditEventGroupMap.keySet().forEach(this::dispatchEventsForAggregate);
+  }
+
+  private void dispatchEventsForAggregate(UniqueEntityIDString id) {
+    AuditEventGroup aggregate = findAndValidateAggregate(id);
+    if (aggregate != null) {
+      try {
+        dispatchAggregateEvents(aggregate);
+        removeAggregateFromMarkedDispatchList(aggregate);
+      } catch (Exception e) {
+        handleDispatchError(id, e);
+      }
+    }
+  }
+
+  private void handleDispatchError(UniqueEntityIDString id, Exception e) {
+    log.error("Error dispatching events for aggregate with id {}", id, e);
+  }
+
+  private AuditEventGroup findAndValidateAggregate(UniqueEntityIDString id) {
+    AuditEventGroup aggregate = findMarkedAggregateByID(id);
+    if (aggregate == null) {
+      log.info("Cannot find aggregate with id {}", id);
+      return null;
+    }
+    return aggregate;
   }
 
   private void removeAggregateFromMarkedDispatchList(AuditEventGroup aggregate) {
@@ -84,16 +98,4 @@ public class AuditEventManager {
         .forEach(handler -> handler.execute(event));
   }
 
-  public void dispatchEventsForAggregates(ArrayList<UniqueEntityIDString> ids) {
-    ids.parallelStream()
-        .forEach(
-            id -> {
-              AuditEventGroup aggregate = findMarkedAggregateByID(id);
-              if (aggregate != null) {
-                dispatchAggregateEvents(aggregate);
-                aggregate.clearEvents();
-                removeAggregateFromMarkedDispatchList(aggregate);
-              }
-            });
-  }
 }
