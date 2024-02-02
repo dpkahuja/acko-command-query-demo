@@ -65,10 +65,6 @@ public class DomainEvents {
 
   private static void dispatch(IDomainEvent event) {
     String eventClassName = event.getClass().getSimpleName();
-    log.info(
-        "handlersMap {}, eventClassName {}",
-        handlersMap.getOrDefault(eventClassName, new ArrayList<>()),
-        eventClassName);
     handlersMap
         .getOrDefault(eventClassName, new ArrayList<>())
         .forEach(
