@@ -1,7 +1,6 @@
 package com.acko.dynamicdatasourcerouting.events.employee;
 
 import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeCreated;
-import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeFound;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 

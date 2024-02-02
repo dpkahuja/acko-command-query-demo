@@ -1,9 +1,8 @@
 package com.acko.dynamicdatasourcerouting.events.employee;
 
 import com.acko.dynamicdatasourcerouting.events.DomainEvents;
-import javax.annotation.PostConstruct;
-
 import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeCreated;
+import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,8 @@ public class EmployeeProcessor {
   @PostConstruct
   public void setupSubscriptions() {
     log.info("setupSubscriptions EmployeeProcessor");
-    DomainEvents.register(employeeCreatedNotificationHandler, EmployeeCreated.class.getSimpleName());
+    DomainEvents.register(
+        employeeCreatedNotificationHandler, EmployeeCreated.class.getSimpleName());
     DomainEvents.register(employeeCreatedLogHandler, EmployeeCreated.class.getSimpleName());
   }
 }

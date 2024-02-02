@@ -43,7 +43,6 @@ public class AuditEvents {
 
   private void logDomainEventAdded(IDomainEvent domainEvent) {
     Class<?> domainEventClass = domainEvent.getClass();
-   log.info(
-        "[Domain Event Added]: " + genericType + " ==> " + domainEventClass.getSimpleName());
+    log.info("[Domain Event Added]: " + genericType + " ==> " + domainEventClass.getSimpleName());
   }
 }

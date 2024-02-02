@@ -8,4 +8,5 @@ public interface IDomainEvent {
   }
 
   UniqueEntityIDString getAggregateId();
+
 }

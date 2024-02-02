@@ -2,18 +2,19 @@ package com.acko.dynamicdatasourcerouting.events;
 
 import com.acko.dynamicdatasourcerouting.events.employee.EventHandler;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class DomainEvents {
 
   private static final Map<String, List<EventHandler>> handlersMap =
-      new HashMap<>(); // event name to callback
+      new ConcurrentHashMap<>(); // event name to callback
   private static final List<AuditEvents> markedAggregates =
-      new ArrayList<>(); // group of events for one command/aggregate id
+      new CopyOnWriteArrayList<>(); // group of events for one command/aggregate id
 
   // if aggregate is missing, add it
   public static void markAggregateForDispatch(AuditEvents aggregate) {
@@ -25,10 +26,7 @@ public class DomainEvents {
   }
 
   private static void dispatchAggregateEvents(AuditEvents aggregate) {
-    aggregate.getDomainEvents().forEach(event -> {
-      log.info("dispatch {}", event);
-      dispatch(event);});
-
+    aggregate.getDomainEvents().forEach(event -> dispatch(event));
   }
 
   private static void removeAggregateFromMarkedDispatchList(AuditEvents aggregate) {
@@ -44,7 +42,6 @@ public class DomainEvents {
 
   public static void dispatchEventsForAggregate(UniqueEntityIDString id) {
     AuditEvents aggregate = findMarkedAggregateByID(id);
-  log.info("dispatchEventsForAggregate {} ", aggregate);
     if (aggregate != null) {
       dispatchAggregateEvents(aggregate);
       aggregate.clearEvents();
@@ -68,13 +65,16 @@ public class DomainEvents {
 
   private static void dispatch(IDomainEvent event) {
     String eventClassName = event.getClass().getSimpleName();
-    log.info("handlersMap {}, eventClassName {}", handlersMap
-            .getOrDefault(eventClassName, new ArrayList<>()), eventClassName);
+    log.info(
+        "handlersMap {}, eventClassName {}",
+        handlersMap.getOrDefault(eventClassName, new ArrayList<>()),
+        eventClassName);
     handlersMap
         .getOrDefault(eventClassName, new ArrayList<>())
-        .forEach(handler -> {
-          log.info("Executiing {} with {}", handler, event);
-          handler.execute(event);
-        });
+        .forEach(
+            handler -> {
+              log.info("Executiing {} with {}", handler, event);
+              handler.execute(event);
+            });
   }
 }
