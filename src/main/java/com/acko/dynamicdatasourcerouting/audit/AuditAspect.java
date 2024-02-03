@@ -21,7 +21,8 @@ public class AuditAspect {
     }
     boolean exception = false;
     AuditEventManager auditEventManager =
-        new AuditEventManager(audit.requiredName()); // command class name
+        new AuditEventManager(); // command class name
+    auditEventManager.initialize(audit.requiredName());
     try {
       // Your pre-processing logic, e.g., setting the audit object
       AuditContextHolder.set(auditEventManager);
@@ -50,5 +51,4 @@ public class AuditAspect {
   private boolean shouldDispatchEvents(Audit audit, boolean exception) {
     return audit.mode().equals(AuditMode.AUTO) && !exception;
   }
-
 }

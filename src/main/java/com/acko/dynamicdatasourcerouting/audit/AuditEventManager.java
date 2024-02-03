@@ -1,30 +1,36 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Log4j2
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Component
 public class AuditEventManager {
 
   private final Map<UniqueEntityIDString, AuditEventGroup> auditEventGroupMap =
       new ConcurrentHashMap<>();
-  private final UniqueEntityIDString defaultGroupID;
-  private final AuditEventHandlerConfig auditEventHandlerConfig;
+  private UniqueEntityIDString defaultGroupID;
+  private AuditEventDispatcher auditEventDispatcher;
 
-  // constructor
-  public AuditEventManager(String groupName) {
+  // initialize
+  public void initialize(String groupName) {
     this.defaultGroupID = new UniqueEntityIDString();
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName, this.defaultGroupID);
     auditEventGroupMap.put(this.defaultGroupID, auditEventGroup);
-    this.auditEventHandlerConfig = BeanAccessor.getBean(AuditEventHandlerConfig.class);
   }
 
   /*
-  * new event group for same command group
+   * new event group for same command group
    */
   public AuditEventGroup spawn(String groupName) {
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName);
@@ -45,36 +51,16 @@ public class AuditEventManager {
   }
 
   public void dispatchEventsForSingleAggregate(UniqueEntityIDString id) {
-    dispatchEventsForAggregate(id);
+    this.auditEventDispatcher.dispatchEventsForAggregate(findMarkedAggregateByID(id));
+    removeAggregateFromMarkedDispatchList(findMarkedAggregateByID(id));
   }
 
   public void dispatchAllEventsForAggregate() {
-    auditEventGroupMap.keySet().forEach(this::dispatchEventsForAggregate);
-  }
-
-  private void dispatchEventsForAggregate(UniqueEntityIDString id) {
-    AuditEventGroup aggregate = findAndValidateAggregate(id);
-    if (aggregate != null) {
-      try {
-        dispatchAggregateEvents(aggregate);
-        removeAggregateFromMarkedDispatchList(aggregate);
-      } catch (Exception e) {
-        handleDispatchError(id, e);
-      }
-    }
-  }
-
-  private void handleDispatchError(UniqueEntityIDString id, Exception e) {
-    log.error("Error dispatching events for aggregate with id {}", id, e);
-  }
-
-  private AuditEventGroup findAndValidateAggregate(UniqueEntityIDString id) {
-    AuditEventGroup aggregate = findMarkedAggregateByID(id);
-    if (aggregate == null) {
-      log.info("Cannot find aggregate with id {}", id);
-      return null;
-    }
-    return aggregate;
+    auditEventGroupMap
+        .keySet()
+        .forEach(
+            id ->
+                this.auditEventDispatcher.dispatchEventsForAggregate(findMarkedAggregateByID(id)));
   }
 
   private void removeAggregateFromMarkedDispatchList(AuditEventGroup aggregate) {
@@ -86,16 +72,12 @@ public class AuditEventManager {
     return auditEventGroupMap.getOrDefault(id, null);
   }
 
-  private void dispatchAggregateEvents(AuditEventGroup aggregate) {
-    aggregate.getDomainEvents().parallelStream().forEach(event -> dispatch(event));
+  public AuditEventGroup findAndValidateAggregate(UniqueEntityIDString id) {
+    AuditEventGroup aggregate = findMarkedAggregateByID(id);
+    if (aggregate == null) {
+      log.info("Cannot find aggregate with id {}", id);
+      return null;
+    }
+    return aggregate;
   }
-
-  private void dispatch(IAuditEventContext event) {
-    String eventClassName = event.getClass().getSimpleName();
-    auditEventHandlerConfig
-        .getHandlersMap()
-        .getOrDefault(eventClassName, new ArrayList<>())
-        .forEach(handler -> handler.execute(event));
-  }
-
 }
