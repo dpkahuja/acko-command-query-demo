@@ -20,7 +20,8 @@ public class AuditAspect {
       return joinPoint.proceed();
     }
     boolean exception = false;
-    AuditEventManager auditEventManager = new AuditEventManager(audit.requiredName()); // command class name
+    AuditEventManager auditEventManager =
+        new AuditEventManager(audit.requiredName()); // command class name
     try {
       // Your pre-processing logic, e.g., setting the audit object
       AuditContextHolder.set(auditEventManager);

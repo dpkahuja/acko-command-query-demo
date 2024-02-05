@@ -1,14 +1,13 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
 import com.acko.dynamicdatasourcerouting.events.employee.EventHandler;
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Getter

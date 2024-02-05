@@ -3,19 +3,15 @@ package com.acko.dynamicdatasourcerouting.audit;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Log4j2
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 public class AuditEventManager {
 
   private final Map<UniqueEntityIDString, AuditEventGroup> auditEventGroupMap =
