@@ -14,7 +14,7 @@
     <name>dynamic-datasource-routing</name>
     <description>Example of dynamic-datasource-routing in springboot</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>13</java.version>
     </properties>
 
     <dependencies>

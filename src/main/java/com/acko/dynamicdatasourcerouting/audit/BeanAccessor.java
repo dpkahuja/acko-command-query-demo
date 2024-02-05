@@ -13,7 +13,7 @@ public class BeanAccessor implements ApplicationContextAware {
   private static ApplicationContext applicationContext;
 
   public static <T> T getBean(Class<T> beanClass) {
-    return BeanAccessor.getBean(beanClass);
+    return applicationContext.getBean(beanClass);
   }
 
   @Override

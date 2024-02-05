@@ -33,6 +33,7 @@ public class AuditEventDispatcher {
 
   private void dispatch(IAuditEventContext event) {
     String eventClassName = event.getClass().getSimpleName();
+    log.info("dispatching audit event {} with {}", eventClassName, event);
     auditEventHandlerConfig
         .getHandlersMap()
         .getOrDefault(eventClassName, new ArrayList<>())

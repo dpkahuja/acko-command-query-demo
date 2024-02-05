@@ -21,8 +21,7 @@ public class AuditAspect {
     }
     boolean exception = false;
     AuditEventManager auditEventManager =
-        new AuditEventManager(); // command class name
-    auditEventManager.initialize(audit.requiredName());
+        new AuditEventManager(audit.requiredName()); // command class name
     try {
       // Your pre-processing logic, e.g., setting the audit object
       AuditContextHolder.set(auditEventManager);
