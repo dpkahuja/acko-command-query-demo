@@ -1,5 +1,6 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,12 +22,14 @@ public class AuditEventManager {
       new ConcurrentHashMap<>();
   private UniqueEntityIDString defaultGroupID;
   private AuditEventDispatcher auditEventDispatcher;
+  private List<String> groupNames;
 
   // initialize
-  public void initialize(String groupName) {
+  public AuditEventManager(String groupName) {
     this.defaultGroupID = new UniqueEntityIDString();
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName, this.defaultGroupID);
     auditEventGroupMap.put(this.defaultGroupID, auditEventGroup);
+    auditEventDispatcher = BeanAccessor.getBean(AuditEventDispatcher.class);
   }
 
   /*
