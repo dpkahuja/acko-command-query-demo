@@ -1,13 +1,17 @@
 package com.acko.dynamicdatasourcerouting.datasource;
 
+import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
+@Log4j2
+@Order(1)
 public class DBAspect {
   @Autowired DataSourceContextHolder dataSourceContextHolder;
 
@@ -16,11 +20,11 @@ public class DBAspect {
       throws Throwable {
     try {
       DataSourceEnum dbSource = dBContext.source();
-      System.out.println("Starting db source with " + dbSource);
+      log.info("Starting db source with " + dbSource);
       dataSourceContextHolder.setBranchContext(dbSource);
       return joinPoint.proceed();
     } finally {
-      System.out.println("Call to " + joinPoint.getSignature() + " used " + dBContext.source());
+      log.info("Call to " + joinPoint.getSignature() + " used " + dBContext.source());
       DataSourceContextHolder.clearBranchContext();
     }
   }
