@@ -50,16 +50,23 @@ public class AuditEventManager {
   }
 
   public void dispatchEventsForSingleAggregate(UniqueEntityIDString id) {
-    this.auditEventDispatcher.dispatchEventsForAggregate(findMarkedAggregateByID(id));
+    this.auditEventDispatcher.dispatchAggregateEventsInParallel(findMarkedAggregateByID(id));
     removeAggregateFromMarkedDispatchList(findMarkedAggregateByID(id));
   }
 
-  public void dispatchAllEventsForAggregate() {
+  public void dispatchAllEventsForAggregate(boolean dispatchParallely) {
     auditEventGroupMap
         .keySet()
         .forEach(
-            id ->
-                this.auditEventDispatcher.dispatchEventsForAggregate(findMarkedAggregateByID(id)));
+            id -> {
+              if (dispatchParallely) {
+                this.auditEventDispatcher.dispatchAggregateEventsInParallel(
+                    findMarkedAggregateByID(id));
+              } else {
+                this.auditEventDispatcher.dispatchAggregateEventsInOrder(
+                    findMarkedAggregateByID(id));
+              }
+            });
   }
 
   private void removeAggregateFromMarkedDispatchList(AuditEventGroup aggregate) {

@@ -19,7 +19,7 @@ public class AuditAspect {
       log.error("audit aspect has missing field `requiredName`");
       return joinPoint.proceed();
     }
-    boolean exception = false;
+    boolean dispatchOnException = false;
     AuditEventManager auditEventManager =
         new AuditEventManager(audit.requiredName()); // command class name
     try {
@@ -31,13 +31,13 @@ public class AuditAspect {
     } catch (Exception e) {
       log.error("exception in audit asepect {}", e.getMessage());
       if (!audit.dontDispatchOnException()) {
-        exception = true;
+        dispatchOnException = true;
       }
       throw e;
     } finally {
       // hook to publish all events by audEvent reference id
-      if (shouldDispatchEvents(audit, exception)) {
-        auditEventManager.dispatchAllEventsForAggregate();
+      if (shouldDispatchEvents(audit, dispatchOnException)) {
+          auditEventManager.dispatchAllEventsForAggregate(audit.dispatchParallely());
       }
       AuditContextHolder.clear();
     }

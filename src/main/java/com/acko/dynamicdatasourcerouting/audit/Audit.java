@@ -14,7 +14,7 @@ public @interface Audit {
    *
    * @return The required name for auditing.
    */
-  String requiredName() default "";
+  String requiredName();
 
   /**
    * Specifies whether to dispatch events AUTO or manually.
@@ -29,4 +29,7 @@ public @interface Audit {
    * @return {@code true} if events should not be dispatched on exceptions; {@code false} otherwise.
    */
   boolean dontDispatchOnException() default true;
+
+  /** dispatch domain events of an event group in parallel default: in order */
+  boolean dispatchParallely() default true;
 }

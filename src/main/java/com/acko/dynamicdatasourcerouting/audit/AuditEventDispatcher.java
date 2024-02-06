@@ -15,18 +15,24 @@ import org.springframework.stereotype.Component;
 public class AuditEventDispatcher {
   private final AuditEventHandlerConfig auditEventHandlerConfig;
 
-  void dispatchEventsForAggregate(AuditEventGroup aggregate) {
+  void dispatchAggregateEventsInParallel(AuditEventGroup aggregate) {
     if (aggregate != null) {
       try {
-        dispatchAggregateEvents(aggregate);
+        aggregate.getDomainEvents().parallelStream().forEach(event -> dispatch(event));
       } catch (Exception e) {
         handleDispatchError(aggregate, e);
       }
     }
   }
 
-  private void dispatchAggregateEvents(AuditEventGroup aggregate) {
-    aggregate.getDomainEvents().parallelStream().forEach(event -> dispatch(event));
+  void dispatchAggregateEventsInOrder(AuditEventGroup aggregate) {
+    if (aggregate != null) {
+      try {
+        aggregate.getDomainEvents().forEach(event -> dispatch(event));
+      } catch (Exception e) {
+        handleDispatchError(aggregate, e);
+      }
+    }
   }
 
   private void handleDispatchError(AuditEventGroup aggregate, Exception e) {
