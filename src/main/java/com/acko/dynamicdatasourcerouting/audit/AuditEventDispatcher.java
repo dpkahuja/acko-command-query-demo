@@ -1,6 +1,8 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
+import com.acko.dynamicdatasourcerouting.events.employee.EventHandler;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -33,10 +35,20 @@ public class AuditEventDispatcher {
 
   private void dispatch(IAuditEventContext event) {
     String eventClassName = event.getClass().getSimpleName();
-    log.info("dispatching audit event {} with {}", eventClassName, event);
-    auditEventHandlerConfig
-        .getHandlersMap()
-        .getOrDefault(eventClassName, new ArrayList<>())
-        .forEach(handler -> handler.execute(event));
+    List<EventHandler> handlers =
+        auditEventHandlerConfig.getHandlersMap().getOrDefault(eventClassName, new ArrayList<>());
+    log.info("dispatching audit event {} with {} in {} handlers", eventClassName, event, handlers);
+    handlers.forEach(
+        handler -> {
+          try {
+            handler.execute(event);
+          } catch (Exception e) {
+            log.error(
+                "error while executing eventClassName {}, handler {}, with body {}",
+                eventClassName,
+                handler,
+                event);
+          }
+        });
   }
 }

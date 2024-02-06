@@ -22,14 +22,14 @@ public class AuditEventManager {
 
   // initialize
   public AuditEventManager(String groupName) {
-    this.defaultGroupID = new UniqueEntityIDString();
-    AuditEventGroup auditEventGroup = new AuditEventGroup(groupName, this.defaultGroupID);
+    AuditEventGroup auditEventGroup = new AuditEventGroup(groupName);
+    this.defaultGroupID = auditEventGroup.getUniqueEntityIDString();
     auditEventGroupMap.put(this.defaultGroupID, auditEventGroup);
     auditEventDispatcher = BeanAccessor.getBean(AuditEventDispatcher.class);
   }
 
   /*
-   * new event group for same command group
+   * new event group for same command group, this is for using outside the audit aspect
    */
   public AuditEventGroup spawn(String groupName) {
     AuditEventGroup auditEventGroup = new AuditEventGroup(groupName);
@@ -42,8 +42,8 @@ public class AuditEventManager {
     aggregate.addDomainEvent(auditEventContext);
   }
 
-  public void addDomainEvent(String id, IAuditEventContext auditEventContext) {
-    AuditEventGroup aggregate = auditEventGroupMap.get(id);
+  public void addDomainEvent(String groupID, IAuditEventContext auditEventContext) {
+    AuditEventGroup aggregate = auditEventGroupMap.get(groupID);
     if (aggregate != null) {
       aggregate.addDomainEvent(auditEventContext);
     }
