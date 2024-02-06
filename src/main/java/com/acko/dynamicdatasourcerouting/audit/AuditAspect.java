@@ -50,5 +50,4 @@ public class AuditAspect {
   private boolean shouldDispatchEvents(Audit audit, boolean exception) {
     return audit.mode().equals(AuditMode.AUTO) && !exception;
   }
-
 }

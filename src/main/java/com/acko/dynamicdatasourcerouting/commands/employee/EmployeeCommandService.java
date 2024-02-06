@@ -39,6 +39,13 @@ public class EmployeeCommandService implements IEmployeeCommandService {
     auditEventManager.addDomainEvent(
         new LogCreated(
             new UniqueEntityIDString(), "employee is created " + employee.getEmployeeId()));
+    subTask(employee);
+  }
+
+  @Audit(requiredName = "CreateEmployeeCommand2", mode = AuditMode.AUTO)
+  private void subTask(Employee employee) {
+    AuditEventManager auditEventManager = AuditContextHolder.get();
+    auditEventManager.addDomainEvent(new EmployeeCreated(employee, "subtask"));
   }
 
   @Audit(requiredName = "DeleteEmployeesCommand", mode = AuditMode.AUTO)

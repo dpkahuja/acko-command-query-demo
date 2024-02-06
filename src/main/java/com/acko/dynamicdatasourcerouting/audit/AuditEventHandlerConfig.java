@@ -1,45 +1,36 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
-import com.acko.dynamicdatasourcerouting.events.employee.EmployeeCreatedLogHandler;
-import com.acko.dynamicdatasourcerouting.events.employee.EmployeeCreatedNotificationHandler;
 import com.acko.dynamicdatasourcerouting.events.employee.EventHandler;
-import com.acko.dynamicdatasourcerouting.events.employee.LogCreatedHandler;
-import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeCreated;
-import com.acko.dynamicdatasourcerouting.events.employee.models.LogCreated;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@RequiredArgsConstructor
 @Log4j2
-@Data
+@Getter
 public class AuditEventHandlerConfig implements IEventHandlerConfig {
-  private final Map<String, List<EventHandler>> handlersMap =
-      new ConcurrentHashMap<>(); // event name to callbacks
 
-  // handlers for each event
-  private final EmployeeCreatedNotificationHandler employeeCreatedNotificationHandler;
-  private final EmployeeCreatedLogHandler employeeCreatedLogHandler;
-  private final LogCreatedHandler logCreatedHandler;
+  // Initialize an empty map to avoid any null checks later
+  private final Map<String, List<EventHandler>> handlersMap = new HashMap<>();
 
-  @PostConstruct
-  public void setupSubscriptions() {
-    log.info("setupSubscriptions");
-    register(employeeCreatedNotificationHandler, EmployeeCreated.class.getSimpleName());
-    register(employeeCreatedLogHandler, EmployeeCreated.class.getSimpleName());
-    register(logCreatedHandler, LogCreated.class.getSimpleName());
+  /* We'll provide the implementation of adding handlers to config.
+  This would make sure that same event name is used while registration and event dispatch */
+  @Override
+  public <T extends IAuditEventContext, U extends EventHandler> void registerHandler(
+      Class<T> eventClass, U handler) {
+    String eventClassName = eventClass.getSimpleName();
+    handlersMap.computeIfAbsent(eventClassName, k -> new ArrayList<>()).add(handler);
   }
 
-  public <T extends IAuditEventContext> void register(
-      EventHandler<T> callback, String eventClassName) {
-    log.info("register {} ", eventClassName);
-    handlersMap.computeIfAbsent(eventClassName, k -> new ArrayList<>()).add(callback);
+  @PostConstruct
+  public void logSubscriptions() {
+    log.info("setup audit subscriptions");
+    handlersMap.forEach(
+        (eventClassName, handlers) ->
+            handlers.forEach(
+                handler -> log.info("register {} with {} ", eventClassName, handler.getClass())));
   }
 }

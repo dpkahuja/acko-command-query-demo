@@ -1,7 +1,6 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -19,13 +18,13 @@ public class AuditEventGroup {
   public AuditEventGroup(String groupName) {
     this.groupName = groupName;
     this.uniqueEntityIDString = new UniqueEntityIDString();
-    this.domainEvents = Collections.unmodifiableList(new ArrayList<>());
+    this.domainEvents = new ArrayList<>();
   }
 
   public AuditEventGroup(String groupName, UniqueEntityIDString uniqueEntityIDString) {
     this.groupName = groupName;
     this.uniqueEntityIDString = uniqueEntityIDString;
-    this.domainEvents = Collections.unmodifiableList(new ArrayList<>());
+    this.domainEvents = new ArrayList<>();
   }
 
   public List<IAuditEventContext> getDomainEvents() {

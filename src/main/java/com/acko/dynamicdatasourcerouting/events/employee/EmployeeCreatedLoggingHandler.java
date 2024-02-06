@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Log4j2
-public class EmployeeCreatedLogHandler implements EventHandler<EmployeeCreated> {
+public class EmployeeCreatedLoggingHandler implements EventHandler<EmployeeCreated> {
 
   @Override
   public void execute(EmployeeCreated event) {
-    log.info("EVENT EmployeeCreatedLogHandler {}", event);
+    log.info("EVENT EmployeeCreatedLoggingHandler {}", event);
   }
 }
