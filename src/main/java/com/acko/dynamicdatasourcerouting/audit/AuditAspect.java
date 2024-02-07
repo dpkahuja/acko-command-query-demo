@@ -37,7 +37,7 @@ public class AuditAspect {
     } finally {
       // hook to publish all events by audEvent reference id
       if (shouldDispatchEvents(audit, dispatchOnException)) {
-          auditEventManager.dispatchAllEventsForAggregate(audit.dispatchParallely());
+        auditEventManager.dispatchAllEventsForAggregate(audit.dispatchParallely());
       }
       AuditContextHolder.clear();
     }

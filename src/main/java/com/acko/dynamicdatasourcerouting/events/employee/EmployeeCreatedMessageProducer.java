@@ -14,8 +14,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class EmployeeCreatedMessageProducer<EmployeeCreated>
     implements MessageProducer<EmployeeCreated> {
 
-  @Autowired
-  private KafkaTemplate<String, EmployeeCreated> kafkaTemplate;
+  @Autowired private KafkaTemplate<String, EmployeeCreated> kafkaTemplate;
 
   @Value(value = "${spring.kafka.message.topicOne}")
   private String topicName;
