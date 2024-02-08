@@ -1,10 +1,13 @@
 package com.acko.dynamicdatasourcerouting.events.employee;
 
 import com.acko.dynamicdatasourcerouting.audit.AuditEventHandlerConfig;
+import com.acko.dynamicdatasourcerouting.events.employee.handlers.*;
 import com.acko.dynamicdatasourcerouting.events.employee.models.AllEmployeeDeleted;
 import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeCreated;
 import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeFound;
 import com.acko.dynamicdatasourcerouting.events.employee.models.LogCreated;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +28,12 @@ public class AuditEventEmployeeConfiguration {
   public AuditEventHandlerConfig auditEventHandlerConfig() {
     AuditEventHandlerConfig config = new AuditEventHandlerConfig();
     config.registerHandler(EmployeeCreated.class, employeeCreatedNotificationHandler);
+    config.registerHandler(EmployeeCreated.class, employeeCreatedLoggingHandler);
     config.registerHandler(EmployeeFound.class, employeeFound);
     config.registerHandler(LogCreated.class, logCreatedHandler);
     config.registerHandler(AllEmployeeDeleted.class, allEmployeeDeletedHandler);
-    config.registerHandler(EmployeeCreated.class, employeeCreatedLoggingHandler);
+    ExecutorService executorService = Executors.newFixedThreadPool(100);
+    config.registerThreadExecutor(executorService);
     return config;
   }
 }

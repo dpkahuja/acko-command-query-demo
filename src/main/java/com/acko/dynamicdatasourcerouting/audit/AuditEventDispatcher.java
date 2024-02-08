@@ -1,6 +1,5 @@
 package com.acko.dynamicdatasourcerouting.audit;
 
-import com.acko.dynamicdatasourcerouting.events.employee.EventHandler;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -18,7 +17,10 @@ public class AuditEventDispatcher {
   void dispatchAggregateEventsInParallel(AuditEventGroup aggregate) {
     if (aggregate != null) {
       try {
-        aggregate.getDomainEvents().parallelStream().forEach(event -> dispatch(event));
+        aggregate.getDomainEvents().parallelStream()
+            .forEach(
+                event ->
+                    auditEventHandlerConfig.getExecutorService().submit(() -> dispatch(event)));
       } catch (Exception e) {
         handleDispatchError(aggregate, e);
       }
@@ -28,7 +30,11 @@ public class AuditEventDispatcher {
   void dispatchAggregateEventsInOrder(AuditEventGroup aggregate) {
     if (aggregate != null) {
       try {
-        aggregate.getDomainEvents().forEach(event -> dispatch(event));
+        aggregate
+            .getDomainEvents()
+            .forEach(
+                event ->
+                    auditEventHandlerConfig.getExecutorService().submit(() -> dispatch(event)));
       } catch (Exception e) {
         handleDispatchError(aggregate, e);
       }
@@ -41,7 +47,7 @@ public class AuditEventDispatcher {
 
   private void dispatch(IAuditEventContext event) {
     String eventClassName = event.getClass().getSimpleName();
-    List<EventHandler> handlers =
+    List<Identifier.EventHandler> handlers =
         auditEventHandlerConfig.getHandlersMap().getOrDefault(eventClassName, new ArrayList<>());
     log.info("dispatching audit event {} with {} in {} handlers", eventClassName, event, handlers);
     handlers.forEach(

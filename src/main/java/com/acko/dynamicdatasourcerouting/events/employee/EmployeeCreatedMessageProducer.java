@@ -1,14 +1,12 @@
 package com.acko.dynamicdatasourcerouting.events.employee;
 
 import com.acko.dynamicdatasourcerouting.events.MessageProducer;
-import com.acko.dynamicdatasourcerouting.events.employee.models.EmployeeCreated;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Service
 public class EmployeeCreatedMessageProducer<EmployeeCreated>
@@ -19,28 +17,25 @@ public class EmployeeCreatedMessageProducer<EmployeeCreated>
   @Value(value = "${spring.kafka.message.topicOne}")
   private String topicName;
 
-  public void sendMessage(EmployeeCreated message) {
+  public CompletableFuture<SendResult<String, EmployeeCreated>> sendMessage(
+      EmployeeCreated message) {
 
-    ListenableFuture<SendResult<String, EmployeeCreated>> future =
+    CompletableFuture<SendResult<String, EmployeeCreated>> future =
         kafkaTemplate.send(topicName, message);
-    future.addCallback(
-        new ListenableFutureCallback<SendResult<String, EmployeeCreated>>() {
-
-          @Override
-          public void onSuccess(SendResult<String, EmployeeCreated> result) {
-            System.out.println(
-                "Sent message=["
-                    + message
-                    + "] with offset=["
-                    + result.getRecordMetadata().offset()
-                    + "]");
-          }
-
-          @Override
-          public void onFailure(Throwable ex) {
-            System.out.println(
-                "Unable to send message=[" + message + "] due to : " + ex.getMessage());
-          }
-        });
+    return future;
+    //    future.whenComplete(
+    //        (result, ex) -> {
+    //          if (ex == null) {
+    //            System.out.println(
+    //                "Sent message=["
+    //                    + message
+    //                    + "] with offset=["
+    //                    + result.getRecordMetadata().offset()
+    //                    + "]");
+    //          } else {
+    //            System.out.println(
+    //                "Unable to send message=[" + message + "] due to : " + ex.getMessage());
+    //          }
+    //        });
   }
 }

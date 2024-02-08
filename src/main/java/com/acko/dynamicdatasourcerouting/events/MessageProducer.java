@@ -1,5 +1,8 @@
 package com.acko.dynamicdatasourcerouting.events;
 
+import java.util.concurrent.CompletableFuture;
+import org.springframework.kafka.support.SendResult;
+
 public interface MessageProducer<T> {
-  void sendMessage(T message);
+  CompletableFuture<SendResult<String, T>> sendMessage(T message);
 }

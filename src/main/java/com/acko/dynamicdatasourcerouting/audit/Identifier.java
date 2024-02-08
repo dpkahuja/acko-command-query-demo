@@ -26,4 +26,8 @@ public class Identifier<T> {
   public T toValue() {
     return this.value;
   }
+
+  public interface EventHandler<T extends IAuditEventContext> {
+    void execute(T event);
+  }
 }
